@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use Cart;
 use App\Models\Coupon;
+use Carbon\Carbon;
 use Illuminate\Database\Console\Migrations\RefreshCommand;
 use PhpParser\Node\Expr\FuncCall;
 
@@ -73,7 +74,7 @@ class CartComponent extends Component
 
     public function applyCouponCode()
     {
-        $coupon = Coupon::where('code',$this->couponCode)->where('cart_value','<=',Cart::instance('cart')->subtotal())->first();
+        $coupon = Coupon::where('code',$this->couponCode)->where('expiry_date','>=',Carbon::today()) ->where('cart_value','<=',Cart::instance('cart')->subtotal())->first();
         if(!$coupon)
         {
             session()->flash('coupon_message', 'Coupon code is invalid');
